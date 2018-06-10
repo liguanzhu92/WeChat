@@ -1,29 +1,20 @@
 package com.example.guanzhuli.wechat.ui;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.guanzhuli.wechat.R;
 import com.example.guanzhuli.wechat.model.Profile;
-import com.example.guanzhuli.wechat.model.Tweet;
-import com.example.guanzhuli.wechat.util.FileHelper;
-import com.google.gson.Gson;
+import com.example.guanzhuli.wechat.network.NetworkApi;
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TweetActivity extends AppCompatActivity {
 
@@ -42,13 +33,22 @@ public class TweetActivity extends AppCompatActivity {
             transaction.add(R.id.fragment_container, tweetFragment);
             transaction.commit();
         }
-        setProfileContent();
+
+        Call<Profile> profileCall = NetworkApi.getClient().create(NetworkApi.User.class).getProfile();
+        profileCall.enqueue(new Callback<Profile>() {
+            @Override
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                setProfileContent(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+
+            }
+        });
     }
 
-    private void setProfileContent() {
-        // load profile
-        Gson gson = new Gson();
-        Profile profile = gson.fromJson(FileHelper.readFile(getApplicationContext(), R.raw.profile), Profile.class);
+    private void setProfileContent(Profile profile) {
         TextView name = findViewById(R.id.user_name);
         name.setText(profile.getNick());
         ImageView avatar = findViewById(R.id.user_avatar);
