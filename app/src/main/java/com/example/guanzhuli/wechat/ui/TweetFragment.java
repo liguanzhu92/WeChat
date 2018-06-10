@@ -9,25 +9,36 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.MutableDocument;
 import com.example.guanzhuli.wechat.R;
+import com.example.guanzhuli.wechat.data.DataFetcher;
+import com.example.guanzhuli.wechat.data.DataPostListener;
+import com.example.guanzhuli.wechat.data.DatabaseManager;
 import com.example.guanzhuli.wechat.model.Tweet;
 import com.example.guanzhuli.wechat.network.NetworkApi;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TweetFragment extends Fragment {
+public class TweetFragment extends Fragment implements DataPostListener {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
+    private TweetAdapter adapter;
     List<Tweet> tweetList = new ArrayList<>();
+
     public TweetFragment() {
         // Requires empty public constructor
     }
@@ -39,6 +50,7 @@ public class TweetFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.i("chest", "attach");
         network();
     }
 
@@ -58,7 +70,27 @@ public class TweetFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mRecyclerView.setAdapter(new TweetAdapter(tweetList));
+        adapter = new TweetAdapter(tweetList);
+        DataFetcher dataFetcher = new DataFetcher(getContext(), this);
+        dataFetcher.execute();
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void postResult(List<Tweet> tweets) {
+        tweetList.clear();
+        tweetList.addAll(tweets);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            DatabaseManager.getSharedInstance(getContext()).database.delete();
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void network() {
@@ -78,13 +110,22 @@ public class TweetFragment extends Fragment {
                     if (tweet.getContent() == null && tweet.getImages() == null) {
                         continue;
                     }
-                    tweetList.add(tweet);
+                    MutableDocument document = new MutableDocument();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    HashMap<String,Object> tweetMap = objectMapper.convertValue(tweet,HashMap.class);
+                    document.setData(tweetMap);
+                    try {
+                        DatabaseManager.getSharedInstance(getContext()).database.save(document);
+                    } catch (CouchbaseLiteException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<List<Tweet>> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

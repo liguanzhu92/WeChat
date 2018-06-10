@@ -62,7 +62,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetItemHol
 
     private void addTweetImage(List<Image> images, RecyclerView.ViewHolder holder) {
         if (holder instanceof TweetItemHolder) {
-            Log.i("chestnut", "has image");
             ImageView imageView;
             for (int i = 0; i < images.size(); i++) {
                 switch (i) {
