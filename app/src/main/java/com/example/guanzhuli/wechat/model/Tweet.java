@@ -3,6 +3,11 @@ package com.example.guanzhuli.wechat.model;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ *  POJO class for tweet
+ *
+ *  Author: Guanzhu Li
+ */
 public class Tweet implements Serializable {
     String content;
     Sender sender;

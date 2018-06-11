@@ -10,6 +10,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 
+/**
+ * Network calling api
+ *
+ * Author: Guanzhu Li
+ */
 public class NetworkApi {
     private static final String BASE_URL = "http://thoughtworks-ios.herokuapp.com/";
     private static Retrofit retrofit = null;

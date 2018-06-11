@@ -50,7 +50,6 @@ public class TweetFragment extends Fragment implements DataPostListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.i("chest", "attach");
         network();
     }
 
@@ -60,6 +59,8 @@ public class TweetFragment extends Fragment implements DataPostListener {
         View root = inflater.inflate(R.layout.fragment_tweet, container, false);
         mRecyclerView = root.findViewById(R.id.recycler_tweet_list);
         linearLayoutManager = new LinearLayoutManager(getContext());
+        adapter = new TweetAdapter(tweetList);
+        mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         DividerItemDecoration decoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         decoration.setDrawable(new ColorDrawable(getResources().getColor(R.color.fade_view_color)));
@@ -70,15 +71,12 @@ public class TweetFragment extends Fragment implements DataPostListener {
     @Override
     public void onResume() {
         super.onResume();
-        adapter = new TweetAdapter(tweetList);
-        DataFetcher dataFetcher = new DataFetcher(getContext(), this);
-        dataFetcher.execute();
-        mRecyclerView.setAdapter(adapter);
+        tweetList.clear();
+        loadData();
     }
 
     @Override
     public void postResult(List<Tweet> tweets) {
-        tweetList.clear();
         tweetList.addAll(tweets);
         adapter.notifyDataSetChanged();
     }
@@ -121,6 +119,7 @@ public class TweetFragment extends Fragment implements DataPostListener {
                         e.printStackTrace();
                     }
                 }
+                loadData();
             }
 
             @Override
@@ -128,5 +127,11 @@ public class TweetFragment extends Fragment implements DataPostListener {
                 t.printStackTrace();
             }
         });
+    }
+
+    private void loadData() {
+        tweetList.clear();
+        DataFetcher dataFetcher = new DataFetcher(getContext(), this);
+        dataFetcher.execute();
     }
 }

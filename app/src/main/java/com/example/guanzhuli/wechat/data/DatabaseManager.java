@@ -8,6 +8,11 @@ import com.couchbase.lite.DatabaseConfiguration;
 
 import java.io.File;
 
+/**
+ * Couchbase Util to manager data
+ *
+ * Author: Guanzhu Li
+ */
 public class DatabaseManager {
     private static final String DB_NAME = "tweetdb";
     public Database database;

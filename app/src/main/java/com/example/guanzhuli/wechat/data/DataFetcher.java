@@ -2,7 +2,6 @@ package com.example.guanzhuli.wechat.data;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.DataSource;
@@ -19,6 +18,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Save tweet to couchbase
+ *
+ * Author: Guanzhu Li
+ */
 public class DataFetcher extends AsyncTask<Void, Void, List<Tweet>> {
     private Context context;
     private DataPostListener listener;

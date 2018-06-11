@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+/**
+ *  POJO class for logged user profile
+ *
+ *  Author: Guanzhu Li
+ */
 public class Profile implements Serializable {
     @SerializedName("profile-image")
     private String profileimage;

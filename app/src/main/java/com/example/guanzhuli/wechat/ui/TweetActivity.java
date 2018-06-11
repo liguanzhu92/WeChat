@@ -2,29 +2,21 @@ package com.example.guanzhuli.wechat.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.MutableDocument;
 import com.example.guanzhuli.wechat.R;
-import com.example.guanzhuli.wechat.data.DatabaseManager;
 import com.example.guanzhuli.wechat.model.Profile;
-import com.example.guanzhuli.wechat.model.Tweet;
 import com.example.guanzhuli.wechat.network.NetworkApi;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TweetActivity extends BaseActivity{
+public class TweetActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

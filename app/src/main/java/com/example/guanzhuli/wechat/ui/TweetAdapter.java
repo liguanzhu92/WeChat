@@ -3,7 +3,6 @@ package com.example.guanzhuli.wechat.ui;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/**
+ * Recyclerview Adapter to display tweet
+ *
+ * Author: Guanzhu Li
+ */
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetItemHolder>{
     private List<Tweet> tweetList;
 
@@ -60,6 +64,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetItemHol
 
     }
 
+    /**
+     * Customized add image view to tweet item
+     * @param images
+     * @param holder
+     */
     private void addTweetImage(List<Image> images, RecyclerView.ViewHolder holder) {
         if (holder instanceof TweetItemHolder) {
             ImageView imageView;
@@ -108,6 +117,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetItemHol
         return imageView;
     }
 
+    /**
+     * Customized add comment to tweet item
+     * @param comments
+     * @param holder
+     */
     private void addComment(List<Comment> comments, RecyclerView.ViewHolder holder) {
         if (holder instanceof TweetItemHolder) {
             for (int i = 0; i < comments.size(); i++) {
@@ -128,6 +142,9 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetItemHol
         return v;
     }
 
+    /**
+     * ViewHolder for tweet item
+     */
     class TweetItemHolder extends RecyclerView.ViewHolder {
         ImageView avatar;
         TextView name;
