@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.DataSource;
 import com.couchbase.lite.Dictionary;
+import com.couchbase.lite.Expression;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryBuilder;
 import com.couchbase.lite.Result;
@@ -26,6 +27,15 @@ import java.util.List;
 public class DataFetcher extends AsyncTask<Void, Void, List<Tweet>> {
     private Context context;
     private DataPostListener listener;
+    private int limit;
+    private int offset;
+
+    public DataFetcher(Context context, DataPostListener listener, int limit, int offset) {
+        this.context = context;
+        this.listener = listener;
+        this.limit = limit;
+        this.offset = offset;
+    }
 
     public DataFetcher(Context context, DataPostListener listener) {
         this.context = context;
@@ -35,6 +45,9 @@ public class DataFetcher extends AsyncTask<Void, Void, List<Tweet>> {
     @Override
     protected List<Tweet> doInBackground(Void... voids) {
         List<Tweet> tweetList = new ArrayList<>();
+/*        Query query = QueryBuilder.select(SelectResult.all())
+                .from(DataSource.database(DatabaseManager.getSharedInstance(context).database))
+                .limit(Expression.intValue(limit), Expression.intValue(offset));*/
         Query query = QueryBuilder.select(SelectResult.all())
                 .from(DataSource.database(DatabaseManager.getSharedInstance(context).database));
         try {

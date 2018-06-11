@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,7 @@ public class TweetFragment extends Fragment implements DataPostListener {
     private LinearLayoutManager linearLayoutManager;
     private TweetAdapter adapter;
     List<Tweet> tweetList = new ArrayList<>();
+    private PagenationScrollListener listener;
 
     public TweetFragment() {
         // Requires empty public constructor
@@ -53,6 +53,18 @@ public class TweetFragment extends Fragment implements DataPostListener {
         network();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        listener = new PagenationScrollListener(linearLayoutManager) {
+            @Override
+            public void loadMore(int limit, int offset) {
+                loadTweet(limit, offset);
+            }
+        };
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,6 +77,7 @@ public class TweetFragment extends Fragment implements DataPostListener {
         DividerItemDecoration decoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         decoration.setDrawable(new ColorDrawable(getResources().getColor(R.color.fade_view_color)));
         mRecyclerView.addItemDecoration(decoration);
+        //mRecyclerView.addOnScrollListener(listener);
         return root;
     }
 
@@ -132,6 +145,11 @@ public class TweetFragment extends Fragment implements DataPostListener {
     private void loadData() {
         tweetList.clear();
         DataFetcher dataFetcher = new DataFetcher(getContext(), this);
+        dataFetcher.execute();
+    }
+
+    private void loadTweet(int limit, int offset) {
+        DataFetcher dataFetcher = new DataFetcher(getContext(), this, limit, offset);
         dataFetcher.execute();
     }
 }
